@@ -28,8 +28,10 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/arm64
+          # amd64 never runs; it exists so the cluster's Trivy (amd64-only) can scan the image.
+          platforms: linux/arm64,linux/amd64
           push: true
+          # Run number stops a manual rebuild of the same commit from overwriting a deployed tag.
           tags: |
             ghcr.io/khaddale/vcgencmd-textfile-collector:latest
-            ghcr.io/khaddale/vcgencmd-textfile-collector:${{ github.sha }}
+            ghcr.io/khaddale/vcgencmd-textfile-collector:${{ github.sha }}-${{ github.run_number }}
